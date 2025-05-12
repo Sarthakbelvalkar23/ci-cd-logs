@@ -1,0 +1,32 @@
+name: Node.js CI Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Tests and Save Logs
+        run: |
+          mkdir -p logs
+          npm test > logs/test-log.txt 2>&1 || true
+
+      - name: Upload Test Logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-logs
+          path: logs/test-log.txt
